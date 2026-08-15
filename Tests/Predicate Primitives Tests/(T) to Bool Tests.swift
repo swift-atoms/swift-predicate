@@ -238,11 +238,16 @@ struct `Fluent Method Closure Tests` {
         // isSmall = abs($0) < 10
         let combined = predicate.and(isPositive).or(isSmall)
 
-        #expect(combined(4) == true)  // (even ∧ positive) ∨ small = (true ∧ true) ∨ true = true
-        #expect(combined(8) == true)  // (even ∧ positive) ∨ small = (true ∧ true) ∨ true = true (8 < 10)
-        #expect(combined(-2) == true)  // (even ∧ positive) ∨ small = (true ∧ false) ∨ true = true
-        #expect(combined(3) == true)  // (even ∧ positive) ∨ small = (false ∧ true) ∨ true = true
-        #expect(combined(11) == false)  // (even ∧ positive) ∨ small = (false ∧ true) ∨ false = false
+        // (even ∧ positive) ∨ small = (true ∧ true) ∨ true = true
+        #expect(combined(4) == true)
+        // (even ∧ positive) ∨ small = (true ∧ true) ∨ true = true (8 < 10)
+        #expect(combined(8) == true)
+        // (even ∧ positive) ∨ small = (true ∧ false) ∨ true = true
+        #expect(combined(-2) == true)
+        // (even ∧ positive) ∨ small = (false ∧ true) ∨ true = true
+        #expect(combined(3) == true)
+        // (even ∧ positive) ∨ small = (false ∧ true) ∨ false = false
+        #expect(combined(11) == false)
     }
 }
 
