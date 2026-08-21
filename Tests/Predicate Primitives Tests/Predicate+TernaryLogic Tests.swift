@@ -1,12 +1,7 @@
-// Predicate+TernaryLogic Tests.swift
-// Tests for three-valued logic lifting with optional values.
-
 import Logic_Ternary_Primitives
 import Testing
 
 @testable import Predicate_Primitives
-
-// MARK: - Basic Ternary Logic Tests
 
 @Suite
 struct `Ternary Logic Basic Tests` {
@@ -52,22 +47,19 @@ struct `Ternary Logic Basic Tests` {
     }
 }
 
-// MARK: - Strong Kleene Semantics Tests
-
 @Suite
 struct `Strong Kleene Semantics Tests` {
     let isEven = Predicate<Int> { $0 % 2 == 0 }
     let isPositive = Predicate<Int> { $0 > 0 }
 
     @Test(arguments: [
-        // AND truth table with unknown
-        // unknown && true = unknown
+
         (lhs: nil as Int?, rhs: 4 as Int?, op: "&&", expected: nil as Bool?),
-        // unknown && false = unknown
+
         (lhs: nil as Int?, rhs: 3 as Int?, op: "&&", expected: nil as Bool?),
-        // true && unknown = unknown
+
         (lhs: 4 as Int?, rhs: nil as Int?, op: "&&", expected: nil as Bool?),
-        // false && unknown = false
+
         (lhs: 3 as Int?, rhs: nil as Int?, op: "&&", expected: false as Bool?),
     ])
     func `ternary AND semantics`(lhs: Int?, rhs: Int?, op: String, expected: Bool?) {
@@ -78,15 +70,13 @@ struct `Strong Kleene Semantics Tests` {
     }
 
     @Test(arguments: [
-        // OR truth table with unknown (Strong Kleene semantics)
-        // isEven: even numbers, isPositive: > 0
-        // unknown || true = true
+
         (lhs: nil as Int?, rhs: 4 as Int?, op: "||", expected: true as Bool?),
-        // unknown || false = unknown
+
         (lhs: nil as Int?, rhs: -3 as Int?, op: "||", expected: nil as Bool?),
-        // true || unknown = true
+
         (lhs: 4 as Int?, rhs: nil as Int?, op: "||", expected: true as Bool?),
-        // false || unknown = unknown
+
         (lhs: 3 as Int?, rhs: nil as Int?, op: "||", expected: nil as Bool?),
     ])
     func `ternary OR semantics`(lhs: Int?, rhs: Int?, op: String, expected: Bool?) {
@@ -96,8 +86,6 @@ struct `Strong Kleene Semantics Tests` {
         #expect(result == expected)
     }
 }
-
-// MARK: - Composition with Optional Values
 
 @Suite
 struct `Optional Composition Tests` {
@@ -149,8 +137,6 @@ struct `Optional Composition Tests` {
     }
 }
 
-// MARK: - Type Inference Tests
-
 @Suite
 struct `Ternary Logic Type Inference Tests` {
     let isEven = Predicate<Int> { $0 % 2 == 0 }
@@ -176,8 +162,6 @@ struct `Ternary Logic Type Inference Tests` {
         #expect(result == true)
     }
 }
-
-// MARK: - Integration with Fluent Methods
 
 @Suite
 struct `Ternary Logic Fluent Method Tests` {
@@ -217,8 +201,6 @@ struct `Ternary Logic Fluent Method Tests` {
         #expect(result2 == nil)
     }
 }
-
-// MARK: - Edge Cases
 
 @Suite
 struct `Ternary Logic Edge Cases Tests` {
@@ -261,8 +243,6 @@ struct `Ternary Logic Edge Cases Tests` {
         #expect(result == nil)
     }
 }
-
-// MARK: - Practical Usage Examples
 
 @Suite
 struct `Ternary Logic Practical Tests` {
@@ -311,8 +291,6 @@ struct `Ternary Logic Practical Tests` {
         #expect(result3 == nil)
     }
 }
-
-// MARK: - Comparison with Optional Lifting
 
 @Suite
 struct `Ternary Logic Vs Optional Lifting Tests` {
