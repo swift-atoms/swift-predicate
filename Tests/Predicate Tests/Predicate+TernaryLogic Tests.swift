@@ -1,7 +1,7 @@
-import Logic_Ternary_Primitives
+import Logic_Ternary
 import Testing
 
-@testable import Predicate_Primitives
+@testable import Predicate
 
 @Suite
 struct `Ternary Logic Basic Tests` {

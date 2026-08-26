@@ -1,4 +1,4 @@
-public import Logic_Ternary_Primitives
+public import Logic_Ternary
 
 extension Predicate {
 

@@ -1,6 +1,6 @@
 import Testing
 
-@testable import Predicate_Primitives
+@testable import Predicate
 
 @Suite
 struct `Predicate Basic Tests` {

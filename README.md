@@ -1,4 +1,4 @@
-# Predicate Primitives
+# Predicate
 
 ![Development Status](https://img.shields.io/badge/status-active--development-blue.svg)
 
@@ -10,7 +10,7 @@ Add the dependency to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/swift-primitives/swift-predicate-primitives.git", branch: "main")
+    .package(url: "https://github.com/swift-molecules/swift-predicate.git", branch: "main")
 ]
 ```
 
@@ -20,7 +20,7 @@ Add the product to your target:
 .target(
     name: "App",
     dependencies: [
-        .product(name: "Predicate Primitives", package: "swift-predicate-primitives")
+        .product(name: "Predicate", package: "swift-predicate")
     ]
 )
 ```
