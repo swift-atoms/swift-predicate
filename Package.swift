@@ -17,38 +17,34 @@ let package = Package(
             targets: ["Predicate"]
         ),
         .library(
-            name: "Predicate Test Support",
-            targets: ["Predicate Test Support"]
+            name: "Predicate Standard Library Integration",
+            targets: ["Predicate Standard Library Integration"]
+        ),
+        .library(
+            name: "Predicate Apple Foundation Integration",
+            targets: ["Predicate Apple Foundation Integration"]
         ),
     ],
-    dependencies: [
-        .package(
-            url: "https://github.com/swift-molecules/swift-logic.git",
-            branch: "main"
-        )
-    ],
+    dependencies: [],
     targets: [
         .target(
             name: "Predicate",
-            dependencies: [
-                .product(name: "Logic Ternary", package: "swift-logic")
-            ]
+            dependencies: []
         ),
         .target(
-            name: "Predicate Test Support",
+            name: "Predicate Standard Library Integration",
+            dependencies: ["Predicate"]
+        ),
+        .target(
+            name: "Predicate Apple Foundation Integration",
             dependencies: [
                 "Predicate",
-                .product(name: "Logic Test Support", package: "swift-logic"),
-            ],
-            path: "Tests/Support"
+                "Predicate Standard Library Integration",
+            ]
         ),
         .testTarget(
             name: "Predicate Tests",
-            dependencies: [
-                "Predicate",
-                .product(name: "Logic Ternary", package: "swift-logic"),
-                "Predicate Test Support",
-            ]
+            dependencies: ["Predicate"]
         ),
     ],
     swiftLanguageModes: [.v6]
