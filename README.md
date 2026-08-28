@@ -10,7 +10,7 @@ Add the dependency to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/swift-molecules/swift-predicate.git", branch: "main")
+    .package(url: "https://github.com/swift-atoms/swift-predicate.git", branch: "main")
 ]
 ```
 

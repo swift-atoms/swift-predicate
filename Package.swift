@@ -16,14 +16,10 @@ let package = Package(
             name: "Predicate",
             targets: ["Predicate"]
         ),
-        .library(
-            name: "Predicate Test Support",
-            targets: ["Predicate Test Support"]
-        ),
     ],
     dependencies: [
         .package(
-            url: "https://github.com/swift-molecules/swift-logic.git",
+            url: "https://github.com/swift-atoms/swift-logic.git",
             branch: "main"
         )
     ],
@@ -34,20 +30,11 @@ let package = Package(
                 .product(name: "Logic Ternary", package: "swift-logic")
             ]
         ),
-        .target(
-            name: "Predicate Test Support",
-            dependencies: [
-                "Predicate",
-                .product(name: "Logic Test Support", package: "swift-logic"),
-            ],
-            path: "Tests/Support"
-        ),
         .testTarget(
             name: "Predicate Tests",
             dependencies: [
-                "Predicate",
+                .target(name: "Predicate"),
                 .product(name: "Logic Ternary", package: "swift-logic"),
-                "Predicate Test Support",
             ]
         ),
     ],
