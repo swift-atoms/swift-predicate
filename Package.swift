@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "swift-predicate-primitives",
+    name: "swift-predicate",
     platforms: [
         .macOS(.v27),
         .iOS(.v27),
@@ -13,41 +13,28 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "Predicate Primitives",
-            targets: ["Predicate Primitives"]
-        ),
-        .library(
-            name: "Predicate Primitives Test Support",
-            targets: ["Predicate Primitives Test Support"]
+            name: "Predicate",
+            targets: ["Predicate"]
         ),
     ],
     dependencies: [
         .package(
-            url: "https://github.com/swift-primitives/swift-logic-primitives.git",
+            url: "https://github.com/swift-atoms/swift-logic.git",
             branch: "main"
         )
     ],
     targets: [
         .target(
-            name: "Predicate Primitives",
+            name: "Predicate",
             dependencies: [
-                .product(name: "Logic Ternary Primitives", package: "swift-logic-primitives")
+                .product(name: "Logic Ternary", package: "swift-logic")
             ]
         ),
-        .target(
-            name: "Predicate Primitives Test Support",
-            dependencies: [
-                "Predicate Primitives",
-                .product(name: "Logic Primitives Test Support", package: "swift-logic-primitives"),
-            ],
-            path: "Tests/Support"
-        ),
         .testTarget(
-            name: "Predicate Primitives Tests",
+            name: "Predicate Tests",
             dependencies: [
-                "Predicate Primitives",
-                .product(name: "Logic Ternary Primitives", package: "swift-logic-primitives"),
-                "Predicate Primitives Test Support",
+                .target(name: "Predicate"),
+                .product(name: "Logic Ternary", package: "swift-logic"),
             ]
         ),
     ],
