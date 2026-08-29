@@ -31,19 +31,19 @@ struct `Ternary Logic Basic Tests` {
     @Test
     func `returns unknown for nil`() {
         let result: Bool? = isEven(nil)
-        #expect(result == nil)
+        #expect(result.isUnknown)
     }
 
     @Test
     func `returns true for matching value`() {
         let result: Bool? = isEven(4)
-        #expect(result == true)
+        #expect(result.isTrue)
     }
 
     @Test
     func `returns false for non matching value`() {
         let result: Bool? = isEven(3)
-        #expect(result == false)
+        #expect(result.isFalse)
     }
 }
 
@@ -97,10 +97,10 @@ struct `Optional Composition Tests` {
         let combined = isEven && isPositive
 
         let result1: Bool? = combined(4)
-        #expect(result1 == true)
+        #expect(result1.isTrue)
 
         let result2: Bool? = combined(nil)
-        #expect(result2 == nil)
+        #expect(result2.isUnknown)
     }
 
     @Test
@@ -108,10 +108,10 @@ struct `Optional Composition Tests` {
         let combined = isEven || isPositive
 
         let result1: Bool? = combined(3)
-        #expect(result1 == true)
+        #expect(result1.isTrue)
 
         let result2: Bool? = combined(nil)
-        #expect(result2 == nil)
+        #expect(result2.isUnknown)
     }
 
     @Test
@@ -119,10 +119,10 @@ struct `Optional Composition Tests` {
         let isOdd = !isEven
 
         let result1: Bool? = isOdd(3)
-        #expect(result1 == true)
+        #expect(result1.isTrue)
 
         let result2: Bool? = isOdd(nil)
-        #expect(result2 == nil)
+        #expect(result2.isUnknown)
     }
 
     @Test
@@ -130,10 +130,10 @@ struct `Optional Composition Tests` {
         let combined = isEven ^ isPositive
 
         let result1: Bool? = combined(3)
-        #expect(result1 == true)
+        #expect(result1.isTrue)
 
         let result2: Bool? = combined(nil)
-        #expect(result2 == nil)
+        #expect(result2.isUnknown)
     }
 }
 
@@ -145,21 +145,21 @@ struct `Ternary Logic Type Inference Tests` {
     func `infers bool optional`() {
         let value: Int? = 4
         let result: Bool? = isEven(value)
-        #expect(result == true)
+        #expect(result.isTrue)
     }
 
     @Test
     func `can explicitly specify type`() {
         let value: Int? = nil
         let result: Bool? = Predicate.callAsFunction(isEven, value)
-        #expect(result == nil)
+        #expect(result.isUnknown)
     }
 
     @Test
     func `works with chained optionals`() {
         let getValue: () -> Int? = { 4 }
         let result: Bool? = isEven(getValue())
-        #expect(result == true)
+        #expect(result.isTrue)
     }
 }
 
@@ -173,10 +173,10 @@ struct `Ternary Logic Fluent Method Tests` {
         let combined = isEven.and(isPositive)
 
         let result1: Bool? = combined(4)
-        #expect(result1 == true)
+        #expect(result1.isTrue)
 
         let result2: Bool? = combined(nil)
-        #expect(result2 == nil)
+        #expect(result2.isUnknown)
     }
 
     @Test
@@ -184,10 +184,10 @@ struct `Ternary Logic Fluent Method Tests` {
         let combined = isEven.or(isPositive)
 
         let result1: Bool? = combined(3)
-        #expect(result1 == true)
+        #expect(result1.isTrue)
 
         let result2: Bool? = combined(nil)
-        #expect(result2 == nil)
+        #expect(result2.isUnknown)
     }
 
     @Test
@@ -195,10 +195,10 @@ struct `Ternary Logic Fluent Method Tests` {
         let isOdd = isEven.negated
 
         let result1: Bool? = isOdd(3)
-        #expect(result1 == true)
+        #expect(result1.isTrue)
 
         let result2: Bool? = isOdd(nil)
-        #expect(result2 == nil)
+        #expect(result2.isUnknown)
     }
 }
 
@@ -210,13 +210,13 @@ struct `Ternary Logic Edge Cases Tests` {
     @Test
     func `always true with nil`() {
         let result: Bool? = alwaysTrue(nil)
-        #expect(result == nil)
+        #expect(result.isUnknown)
     }
 
     @Test
     func `always false with nil`() {
         let result: Bool? = alwaysFalse(nil)
-        #expect(result == nil)
+        #expect(result.isUnknown)
     }
 
     @Test
@@ -228,7 +228,7 @@ struct `Ternary Logic Edge Cases Tests` {
         let complex = (isEven && isPositive) || isSmall
 
         let result: Bool? = complex(nil)
-        #expect(result == nil)
+        #expect(result.isUnknown)
     }
 
     @Test
@@ -240,7 +240,7 @@ struct `Ternary Logic Edge Cases Tests` {
         let chain = isEven.and(isPositive).or(isSmall)
 
         let result: Bool? = chain(nil)
-        #expect(result == nil)
+        #expect(result.isUnknown)
     }
 }
 
@@ -260,13 +260,13 @@ struct `Ternary Logic Practical Tests` {
         let user3 = User(age: nil, isActive: true)
 
         let result1: Bool? = isAdult(user1.age)
-        #expect(result1 == true)
+        #expect(result1.isTrue)
 
         let result2: Bool? = isAdult(user2.age)
-        #expect(result2 == false)
+        #expect(result2.isFalse)
 
         let result3: Bool? = isAdult(user3.age)
-        #expect(result3 == nil)
+        #expect(result3.isUnknown)
     }
 
     @Test
@@ -288,7 +288,7 @@ struct `Ternary Logic Practical Tests` {
         #expect(result2.isFalse)
 
         let result3: Bool? = hasLongName(person3.name?.count)
-        #expect(result3 == nil)
+        #expect(result3.isUnknown)
     }
 }
 
@@ -299,21 +299,21 @@ struct `Ternary Logic Vs Optional Lifting Tests` {
     @Test
     func `ternary logic returns nil`() {
         let result: Bool? = isEven(nil as Int?)
-        #expect(result == nil)
+        #expect(result.isUnknown)
     }
 
     @Test
     func `optional lifting with default returns false`() {
         let lifted = isEven.optional(default: false)
         let result = lifted(nil)
-        #expect(result == false)
+        #expect(!result)
     }
 
     @Test
     func `optional lifting with default returns true`() {
         let lifted = isEven.optional(default: true)
         let result = lifted(nil)
-        #expect(result == true)
+        #expect(result)
     }
 
     @Test
@@ -323,6 +323,7 @@ struct `Ternary Logic Vs Optional Lifting Tests` {
         let ternaryResult: Bool? = isEven(4 as Int?)
         let liftedResult = lifted(4)
 
-        #expect(ternaryResult == liftedResult)
+        #expect(ternaryResult.isTrue)
+        #expect(liftedResult)
     }
 }
