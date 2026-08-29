@@ -282,10 +282,10 @@ struct `Ternary Logic Practical Tests` {
         let person3 = Person(name: nil)
 
         let result1: Bool? = hasLongName(person1.name?.count)
-        #expect(result1 == true)
+        #expect(result1.isTrue)
 
         let result2: Bool? = hasLongName(person2.name?.count)
-        #expect(result2 == false)
+        #expect(result2.isFalse)
 
         let result3: Bool? = hasLongName(person3.name?.count)
         #expect(result3 == nil)
