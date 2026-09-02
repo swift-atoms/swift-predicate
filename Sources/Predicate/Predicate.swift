@@ -1,4 +1,4 @@
-public struct Predicate<T>: @unchecked Sendable {
+public struct Predicate<T> {
 
     public var evaluate: (T) -> Bool
 

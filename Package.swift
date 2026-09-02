@@ -17,24 +17,16 @@ let package = Package(
             targets: ["Predicate"]
         ),
     ],
-    dependencies: [
-        .package(
-            url: "https://github.com/swift-atoms/swift-logic.git",
-            branch: "main"
-        )
-    ],
+    dependencies: [],
     targets: [
         .target(
             name: "Predicate",
-            dependencies: [
-                .product(name: "Logic Ternary", package: "swift-logic")
-            ]
+            dependencies: []
         ),
         .testTarget(
             name: "Predicate Tests",
             dependencies: [
                 .target(name: "Predicate"),
-                .product(name: "Logic Ternary", package: "swift-logic"),
             ]
         ),
     ],
