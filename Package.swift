@@ -13,8 +13,8 @@ let package = Package(
     ],
     products: [
         .library(name: "Predicate", targets: ["Predicate"]),
-        .library(name: "Predicate Standard Library Integration", targets: ["Predicate Standard Library Integration"]),
-        .library(name: "Predicate Foundation Library Integration", targets: ["Predicate Foundation Library Integration"]),
+
+        .library(name: "Predicate Foundation Integration", targets: ["Predicate Foundation Integration"]),
         .library(name: "Predicate Test Support", targets: ["Predicate Test Support"]),
     ],
     dependencies: [],
@@ -25,20 +25,13 @@ let package = Package(
             ],
             path: "Sources/Predicate"
         ),
+        
         .target(
-            name: "Predicate Standard Library Integration",
+            name: "Predicate Foundation Integration",
             dependencies: [
                 .target(name: "Predicate"),
             ],
-            path: "Sources/Predicate Standard Library Integration"
-        ),
-        .target(
-            name: "Predicate Foundation Library Integration",
-            dependencies: [
-                .target(name: "Predicate"),
-                .target(name: "Predicate Standard Library Integration"),
-            ],
-            path: "Sources/Predicate Foundation Library Integration"
+            path: "Sources/Predicate Foundation Integration"
         ),
         .target(
             name: "Predicate Test Support",
@@ -52,8 +45,7 @@ let package = Package(
             dependencies: [
                 .target(name: "Predicate"),
                 .target(name: "Predicate Test Support"),
-                .target(name: "Predicate Standard Library Integration"),
-                .target(name: "Predicate Foundation Library Integration"),
+                .target(name: "Predicate Foundation Integration"),
             ],
             path: "Tests/Predicate Tests"
         ),
