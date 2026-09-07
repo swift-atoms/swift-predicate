@@ -3,7 +3,7 @@ import Testing
 @testable import Predicate
 
 @Suite
-struct `Closure Operator Tests` {
+struct `Boolean closure operators combine evaluation results` {
     let isEven: (Int) -> Bool = { $0 % 2 == 0 }
     let isPositive: (Int) -> Bool = { $0 > 0 }
     let isNegative: (Int) -> Bool = { $0 < 0 }
@@ -14,7 +14,7 @@ struct `Closure Operator Tests` {
         (value: -4, expected: false),
         (value: -3, expected: false),
     ])
-    func `closure AND`(value: Int, expected: Bool) {
+    func `Closure AND returns true when both operands match`(value: Int, expected: Bool) {
         let combined = isEven && isPositive
         #expect(combined(value) == expected)
     }
@@ -25,7 +25,7 @@ struct `Closure Operator Tests` {
         (value: -4, expected: true),
         (value: 3, expected: false),
     ])
-    func `closure OR`(value: Int, expected: Bool) {
+    func `Closure OR returns true when either operand matches`(value: Int, expected: Bool) {
         let combined = isEven || isNegative
         #expect(combined(value) == expected)
     }
@@ -36,7 +36,7 @@ struct `Closure Operator Tests` {
         (value: -4, expected: true),
         (value: -3, expected: false),
     ])
-    func `closure XOR`(value: Int, expected: Bool) {
+    func `Closure XOR returns true when exactly one operand matches`(value: Int, expected: Bool) {
         let combined = isEven ^ isPositive
         #expect(combined(value) == expected)
     }
@@ -45,13 +45,13 @@ struct `Closure Operator Tests` {
         (value: 3, expected: true),
         (value: 4, expected: false),
     ])
-    func `closure NOT`(value: Int, expected: Bool) {
+    func `Closure NOT inverts the closure result`(value: Int, expected: Bool) {
         let isOdd = !isEven
         #expect(isOdd(value) == expected)
     }
 
     @Test
-    func `chained closure operations`() {
+    func `Chained closure conjunction requires every condition to match`() {
         let isSmall: (Int) -> Bool = { abs($0) < 5 }
         let combined = isEven && isPositive && isSmall
 
@@ -64,7 +64,7 @@ struct `Closure Operator Tests` {
 }
 
 @Suite
-struct `Mixed Predicate Closure Operator Tests` {
+struct `Predicates combine with Boolean closures in either operand position` {
     let predicateEven = Predicate<Int> { $0 % 2 == 0 }
     let predicatePositive = Predicate<Int> { $0 > 0 }
     let closureEven: (Int) -> Bool = { $0 % 2 == 0 }
@@ -75,7 +75,7 @@ struct `Mixed Predicate Closure Operator Tests` {
         (value: 3, expected: false),
         (value: -4, expected: false),
     ])
-    func `predicate AND closure`(value: Int, expected: Bool) {
+    func `Predicate AND closure returns true when both operands match`(value: Int, expected: Bool) {
         let combined = predicateEven && closurePositive
         #expect(combined(value) == expected)
     }
@@ -85,7 +85,7 @@ struct `Mixed Predicate Closure Operator Tests` {
         (value: 3, expected: false),
         (value: -4, expected: false),
     ])
-    func `closure AND predicate`(value: Int, expected: Bool) {
+    func `Closure AND predicate returns true when both operands match`(value: Int, expected: Bool) {
         let combined = closureEven && predicatePositive
         #expect(combined(value) == expected)
     }
@@ -95,7 +95,7 @@ struct `Mixed Predicate Closure Operator Tests` {
         (value: 3, expected: true),
         (value: -3, expected: false),
     ])
-    func `predicate OR closure`(value: Int, expected: Bool) {
+    func `Predicate OR closure returns true when either operand matches`(value: Int, expected: Bool) {
         let combined = predicateEven || closurePositive
         #expect(combined(value) == expected)
     }
@@ -105,7 +105,7 @@ struct `Mixed Predicate Closure Operator Tests` {
         (value: 3, expected: true),
         (value: -3, expected: false),
     ])
-    func `closure OR predicate`(value: Int, expected: Bool) {
+    func `Closure OR predicate returns true when either operand matches`(value: Int, expected: Bool) {
         let combined = closureEven || predicatePositive
         #expect(combined(value) == expected)
     }
@@ -116,7 +116,7 @@ struct `Mixed Predicate Closure Operator Tests` {
         (value: -4, expected: true),
         (value: -3, expected: false),
     ])
-    func `predicate XOR closure`(value: Int, expected: Bool) {
+    func `Predicate XOR closure returns true when exactly one operand matches`(value: Int, expected: Bool) {
         let combined = predicateEven ^ closurePositive
         #expect(combined(value) == expected)
     }
@@ -127,14 +127,14 @@ struct `Mixed Predicate Closure Operator Tests` {
         (value: -4, expected: true),
         (value: -3, expected: false),
     ])
-    func `closure XOR predicate`(value: Int, expected: Bool) {
+    func `Closure XOR predicate returns true when exactly one operand matches`(value: Int, expected: Bool) {
         let combined = closureEven ^ predicatePositive
         #expect(combined(value) == expected)
     }
 }
 
 @Suite
-struct `Fluent Method Closure Tests` {
+struct `Fluent predicate methods combine Boolean closures according to their connective` {
     let predicate = Predicate<Int> { $0 % 2 == 0 }
     let isPositive: (Int) -> Bool = { $0 > 0 }
     let isSmall: (Int) -> Bool = { abs($0) < 10 }
@@ -144,7 +144,7 @@ struct `Fluent Method Closure Tests` {
         (value: -4, expected: false),
         (value: 3, expected: false),
     ])
-    func `fluent AND`(value: Int, expected: Bool) {
+    func `Fluent predicate AND returns true when both operands match with a closure operand`(value: Int, expected: Bool) {
         let combined = predicate.and(isPositive)
         #expect(combined(value) == expected)
     }
@@ -155,7 +155,7 @@ struct `Fluent Method Closure Tests` {
         (value: 3, expected: true),
         (value: -3, expected: false),
     ])
-    func `fluent OR`(value: Int, expected: Bool) {
+    func `Fluent predicate OR returns true when either operand matches with a closure operand`(value: Int, expected: Bool) {
         let combined = predicate.or(isPositive)
         #expect(combined(value) == expected)
     }
@@ -166,7 +166,7 @@ struct `Fluent Method Closure Tests` {
         (value: -4, expected: true),
         (value: -3, expected: false),
     ])
-    func `fluent XOR`(value: Int, expected: Bool) {
+    func `Fluent predicate XOR returns true when exactly one operand matches with a closure operand`(value: Int, expected: Bool) {
         let combined = predicate.xor(isPositive)
         #expect(combined(value) == expected)
     }
@@ -176,7 +176,7 @@ struct `Fluent Method Closure Tests` {
         (value: 3, expected: true),
         (value: -4, expected: true),
     ])
-    func `fluent NAND`(value: Int, expected: Bool) {
+    func `Fluent predicate NAND negates the conjunction of its operands with a closure operand`(value: Int, expected: Bool) {
         let combined = predicate.nand(isPositive)
         #expect(combined(value) == expected)
     }
@@ -186,7 +186,7 @@ struct `Fluent Method Closure Tests` {
         (value: 3, expected: false),
         (value: -3, expected: true),
     ])
-    func `fluent NOR`(value: Int, expected: Bool) {
+    func `Fluent predicate NOR negates the disjunction of its operands with a closure operand`(value: Int, expected: Bool) {
         let combined = predicate.nor(isPositive)
         #expect(combined(value) == expected)
     }
@@ -197,7 +197,7 @@ struct `Fluent Method Closure Tests` {
         (value: -3, expected: true),
         (value: 3, expected: true),
     ])
-    func `fluent implies`(value: Int, expected: Bool) {
+    func `Fluent predicate implies agrees with disjunction of the negated antecedent with a closure operand`(value: Int, expected: Bool) {
         let combined = predicate.implies(isPositive)
         #expect(combined(value) == expected)
     }
@@ -208,7 +208,7 @@ struct `Fluent Method Closure Tests` {
         (value: 3, expected: false),
         (value: -3, expected: true),
     ])
-    func `fluent iff`(value: Int, expected: Bool) {
+    func `Fluent predicate iff agrees with negated exclusive disjunction with a closure operand`(value: Int, expected: Bool) {
         let combined = predicate.iff(isPositive)
         #expect(combined(value) == expected)
     }
@@ -219,13 +219,13 @@ struct `Fluent Method Closure Tests` {
         (value: 3, expected: false),
         (value: -3, expected: true),
     ])
-    func `fluent unless`(value: Int, expected: Bool) {
+    func `Fluent predicate unless agrees with implication from the condition with a closure operand`(value: Int, expected: Bool) {
         let combined = predicate.unless(isPositive)
         #expect(combined(value) == expected)
     }
 
     @Test
-    func `chained fluent methods`() {
+    func `Chained fluent methods preserve conjunction before disjunction`() {
 
         let combined = predicate.and(isPositive).or(isSmall)
 
@@ -242,7 +242,7 @@ struct `Fluent Method Closure Tests` {
 }
 
 @Suite
-struct `Closure Commutativity Tests` {
+struct `Boolean closure conjunction disjunction and exclusive disjunction commute` {
     let isEven: (Int) -> Bool = { $0 % 2 == 0 }
     let isPositive: (Int) -> Bool = { $0 > 0 }
 
@@ -278,7 +278,7 @@ struct `Closure Commutativity Tests` {
 }
 
 @Suite
-struct `Closure Associativity Tests` {
+struct `Boolean closure conjunction disjunction and exclusive disjunction associate` {
     let isEven: (Int) -> Bool = { $0 % 2 == 0 }
     let isPositive: (Int) -> Bool = { $0 > 0 }
     let isSmall: (Int) -> Bool = { abs($0) < 5 }
@@ -315,7 +315,7 @@ struct `Closure Associativity Tests` {
 }
 
 @Suite
-struct `Closure Type Conversion Tests` {
+struct `Closure composition produces predicates that support further composition` {
     @Test
     func `closure operators return predicate`() {
         let isEven: (Int) -> Bool = { $0 % 2 == 0 }
