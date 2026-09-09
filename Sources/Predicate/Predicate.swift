@@ -1,27 +1,27 @@
-public struct Predicate<T> {
+public struct Predicate<T: ~Copyable & ~Escapable> {
 
-    public var evaluate: (T) -> Bool
+    public var evaluate: (borrowing T) -> Bool
 
     @inlinable
-    public init(_ evaluate: @escaping (T) -> Bool) {
+    public init(_ evaluate: @escaping (borrowing T) -> Bool) {
         self.evaluate = evaluate
     }
 }
 
-extension Predicate {
+extension Predicate where T: ~Copyable & ~Escapable {
 
     @inlinable
-    public static func callAsFunction(_ predicate: Predicate, _ value: T) -> Bool {
+    public static func callAsFunction(_ predicate: Predicate, _ value: borrowing T) -> Bool {
         predicate.evaluate(value)
     }
 
     @inlinable
-    public func callAsFunction(_ value: T) -> Bool {
+    public func callAsFunction(_ value: borrowing T) -> Bool {
         Self.callAsFunction(self, value)
     }
 }
 
-extension Predicate {
+extension Predicate where T: ~Copyable & ~Escapable {
 
     @inlinable
     public static var always: Predicate {
@@ -34,7 +34,7 @@ extension Predicate {
     }
 }
 
-extension Predicate {
+extension Predicate where T: ~Copyable & ~Escapable {
 
     @inlinable
     public static func negated(_ predicate: Predicate) -> Predicate {
@@ -52,7 +52,7 @@ extension Predicate {
     }
 }
 
-extension Predicate {
+extension Predicate where T: ~Copyable & ~Escapable {
 
     @inlinable
     public static func and(_ lhs: Predicate, _ rhs: Predicate) -> Predicate {
@@ -70,7 +70,7 @@ extension Predicate {
     }
 }
 
-extension Predicate {
+extension Predicate where T: ~Copyable & ~Escapable {
 
     @inlinable
     public static func or(_ lhs: Predicate, _ rhs: Predicate) -> Predicate {
@@ -88,7 +88,7 @@ extension Predicate {
     }
 }
 
-extension Predicate {
+extension Predicate where T: ~Copyable & ~Escapable {
 
     @inlinable
     public static func xor(_ lhs: Predicate, _ rhs: Predicate) -> Predicate {
@@ -106,7 +106,7 @@ extension Predicate {
     }
 }
 
-extension Predicate {
+extension Predicate where T: ~Copyable & ~Escapable {
 
     @inlinable
     public static func nand(_ lhs: Predicate, _ rhs: Predicate) -> Predicate {
@@ -129,7 +129,7 @@ extension Predicate {
     }
 }
 
-extension Predicate {
+extension Predicate where T: ~Copyable & ~Escapable {
 
     @inlinable
     public static func implies(_ lhs: Predicate, _ rhs: Predicate) -> Predicate {
