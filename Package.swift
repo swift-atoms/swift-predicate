@@ -14,12 +14,26 @@ let package = Package(
     products: [
         .library(name: "Predicate", targets: ["Predicate"]),
     ],
-    dependencies: [],
+    traits: [
+        .trait(name: "Contramap", description: "Borrowed input adaptation"),
+        .trait(name: "Always", description: "Constant predicates"),
+        .trait(name: "Optic", description: "Borrowed focus evaluation"),
+        .default(enabledTraits: ["Contramap", "Always", "Optic"]),
+    ],
+    dependencies: [
+        .package(url: "https://github.com/swift-atoms/swift-contramap.git", branch: "main"),
+        .package(url: "https://github.com/swift-atoms/swift-always.git", branch: "main"),
+        .package(url: "https://github.com/swift-atoms/swift-optic.git", branch: "main"),
+    ],
     targets: [
         .target(
             name: "Predicate",
-            dependencies: [],
-            path: "Sources/Predicate"
+            dependencies: [
+                .product(name: "Contramap", package: "swift-contramap", condition: .when(traits: ["Contramap"])),
+                .product(name: "Always", package: "swift-always", condition: .when(traits: ["Always"])),
+                .product(name: "Optic", package: "swift-optic", condition: .when(traits: ["Optic"])),
+            ],
+            path: "Sources"
         ),
 
         .testTarget(
@@ -28,6 +42,22 @@ let package = Package(
                 .target(name: "Predicate"),
             ],
             path: "Tests/Predicate Tests"
+        ),
+        .testTarget(
+            name: "Always Predicate Tests",
+            dependencies: [.target(name: "Predicate")]
+        ),
+        .testTarget(
+            name: "Contramap Predicate Tests",
+            dependencies: [.target(name: "Predicate")]
+        ),
+        .testTarget(
+            name: "Optic Predicate Tests",
+            dependencies: [.target(name: "Predicate")]
+        ),
+        .testTarget(
+            name: "Swift Predicate Tests",
+            dependencies: [.target(name: "Predicate")]
         ),
     ],
     swiftLanguageModes: [.v6]
