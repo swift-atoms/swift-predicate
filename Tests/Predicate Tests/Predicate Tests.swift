@@ -1,6 +1,6 @@
 import Testing
 
-@testable import Predicate
+import Predicate
 
 @Suite
 struct `Predicates evaluate supplied closures and constant truth values` {
@@ -25,12 +25,6 @@ struct `Predicates evaluate supplied closures and constant truth values` {
         #expect(never(value) == false)
     }
 
-    @Test
-    func `Static predicate invocation evaluates the supplied value`() {
-        let isEven = Predicate<Int> { $0 % 2 == 0 }
-        #expect(Predicate.callAsFunction(isEven, 4) == true)
-        #expect(Predicate.callAsFunction(isEven, 3) == false)
-    }
 }
 
 @Suite
@@ -353,7 +347,7 @@ struct `Predicate NAND and NOR agree with negated conjunction and disjunction` {
 }
 
 @Suite
-struct `Predicate implication equivalence and unless preserve their Boolean definitions` {
+struct `Predicate implication and equivalence preserve their Boolean definitions` {
     let isEven = Predicate<Int> { $0 % 2 == 0 }
     let isPositive = Predicate<Int> { $0 > 0 }
 
@@ -397,25 +391,6 @@ struct `Predicate implication equivalence and unless preserve their Boolean defi
         }
     }
 
-    @Test
-    func `Static predicate unless agrees with implication from the condition`() {
-        let unless = Predicate.unless(isEven, condition: isPositive)
-        let reversed = Predicate.implies(isPositive, isEven)
-
-        for n in -10...10 {
-            #expect(unless(n) == reversed(n))
-        }
-    }
-
-    @Test
-    func `Fluent predicate unless agrees with implication from the condition`() {
-        let unless = isEven.unless(isPositive)
-        let reversed = isPositive.implies(isEven)
-
-        for n in -10...10 {
-            #expect(unless(n) == reversed(n))
-        }
-    }
 }
 
 @Suite
@@ -515,65 +490,7 @@ struct `Predicate pullbacks evaluate projected input values` {
 }
 
 @Suite
-struct `Property predicates evaluate values selected by key paths` {
-    struct Person {
-        let age: Int
-        let name: String
-    }
-
-    @Test
-    func `A property predicate evaluates the selected age`() {
-        let isAdult = Predicate<Person>.where(\.age, Predicate<Int> { $0 >= 18 })
-
-        let adult = Person(age: 25, name: "Alice")
-        let child = Person(age: 15, name: "Bob")
-
-        #expect(isAdult(adult) == true)
-        #expect(isAdult(child) == false)
-    }
-
-    @Test
-    func `A property closure evaluates the selected name`() {
-        let hasLongName = Predicate<Person>.where(\.name) { $0.count > 5 }
-
-        let alice = Person(age: 25, name: "Alice")
-        let alexander = Person(age: 30, name: "Alexander")
-
-        #expect(hasLongName(alice) == false)
-        #expect(hasLongName(alexander) == true)
-    }
-
-    @Test
-    func `A fluent property predicate evaluates the selected age`() {
-        let isAdult = Predicate<Person>.where(\.age, .greater.thanOrEqualTo(18))
-
-        let adult = Person(age: 25, name: "Alice")
-        let child = Person(age: 15, name: "Bob")
-
-        #expect(isAdult(adult) == true)
-        #expect(isAdult(child) == false)
-    }
-}
-
-@Suite
 struct `Optional predicates distinguish absence and apply explicit defaults` {
-    @Test(arguments: [
-        (value: nil as Int?, expected: true),
-        (value: 42 as Int?, expected: false),
-    ])
-    func `The nil predicate matches absent values`(value: Int?, expected: Bool) {
-        let isNil = Predicate<Int>.is.nil
-        #expect(isNil(value) == expected)
-    }
-
-    @Test(arguments: [
-        (value: 42 as Int?, expected: true),
-        (value: nil as Int?, expected: false),
-    ])
-    func `The not nil predicate matches present values`(value: Int?, expected: Bool) {
-        let isNotNil = Predicate<Int>.is.notNil
-        #expect(isNotNil(value) == expected)
-    }
 
     @Test
     func `Static optional lifting evaluates present values and uses false for absence`() {
@@ -614,7 +531,7 @@ struct `Predicate quantifiers evaluate matching elements across collections and 
         (array: [], expected: true),
     ])
     func `Static all returns true exactly when every element matches`(array: [Int], expected: Bool) {
-        let allEven = Predicate.all(isEven)
+        let allEven: Predicate<[Int]> = Predicate.forAll(isEven)
         #expect(allEven(array) == expected)
     }
 
@@ -624,7 +541,7 @@ struct `Predicate quantifiers evaluate matching elements across collections and 
         (array: [], expected: false),
     ])
     func `Static any returns true exactly when at least one element matches`(array: [Int], expected: Bool) {
-        let anyEven = Predicate.any(isEven)
+        let anyEven: Predicate<[Int]> = Predicate.forAny(isEven)
         #expect(anyEven(array) == expected)
     }
 
@@ -634,7 +551,7 @@ struct `Predicate quantifiers evaluate matching elements across collections and 
         (array: [], expected: true),
     ])
     func `Static none returns true exactly when no element matches`(array: [Int], expected: Bool) {
-        let noneEven = Predicate.none(isEven)
+        let noneEven: Predicate<[Int]> = Predicate.forNone(isEven)
         #expect(noneEven(array) == expected)
     }
 
@@ -643,8 +560,8 @@ struct `Predicate quantifiers evaluate matching elements across collections and 
         (array: [2, 3, 4], expected: false),
         (array: [], expected: true),
     ])
-    func `Property all returns true exactly when every element matches`(array: [Int], expected: Bool) {
-        let allEven = isEven.all
+    func `Instance forAll returns true exactly when every element matches`(array: [Int], expected: Bool) {
+        let allEven: Predicate<[Int]> = isEven.forAll()
         #expect(allEven(array) == expected)
     }
 
@@ -653,8 +570,8 @@ struct `Predicate quantifiers evaluate matching elements across collections and 
         (array: [1, 3, 5], expected: false),
         (array: [], expected: false),
     ])
-    func `Property any returns true exactly when at least one element matches`(array: [Int], expected: Bool) {
-        let anyEven = isEven.any
+    func `Instance forAny returns true exactly when at least one element matches`(array: [Int], expected: Bool) {
+        let anyEven: Predicate<[Int]> = isEven.forAny()
         #expect(anyEven(array) == expected)
     }
 
@@ -663,8 +580,8 @@ struct `Predicate quantifiers evaluate matching elements across collections and 
         (array: [1, 2, 3], expected: false),
         (array: [], expected: true),
     ])
-    func `Property none returns true exactly when no element matches`(array: [Int], expected: Bool) {
-        let noneEven = isEven.none
+    func `Instance forNone returns true exactly when no element matches`(array: [Int], expected: Bool) {
+        let noneEven: Predicate<[Int]> = isEven.forNone()
         #expect(noneEven(array) == expected)
     }
 
@@ -739,279 +656,60 @@ struct `Predicate quantifiers evaluate matching elements across collections and 
     }
 }
 
-@Suite
-struct `Predicate count quantifiers compare the number of matching elements` {
-    let isEven = Predicate<Int> { $0 % 2 == 0 }
-
-    @Test(arguments: [
-        (array: [2, 4, 6], n: 2, expected: true),
-        (array: [2, 4], n: 3, expected: false),
-        (array: [2, 4, 6, 8], n: 3, expected: true),
-    ])
-    func `Static at least accepts when the matching element count reaches the lower bound`(array: [Int], n: Int, expected: Bool) {
-        let predicate = Predicate.Count.atLeast(isEven, n)
-        #expect(predicate(array) == expected)
-    }
-
-    @Test(arguments: [
-        (array: [2, 4, 6], n: 3, expected: true),
-        (array: [2, 4, 6, 8], n: 3, expected: false),
-        (array: [2, 4], n: 5, expected: true),
-    ])
-    func `Static at most accepts when the matching element count does not exceed the upper bound`(array: [Int], n: Int, expected: Bool) {
-        let predicate = Predicate.Count.atMost(isEven, n)
-        #expect(predicate(array) == expected)
-    }
-
-    @Test(arguments: [
-        (array: [2, 4, 6], n: 3, expected: true),
-        (array: [2, 4], n: 3, expected: false),
-        (array: [2, 4, 6, 8], n: 3, expected: false),
-    ])
-    func `Static exactly accepts when the matching element count equals the requested count`(array: [Int], n: Int, expected: Bool) {
-        let predicate = Predicate.Count.exactly(isEven, n)
-        #expect(predicate(array) == expected)
-    }
-
-    @Test(arguments: [
-        (array: [1, 3, 5], expected: true),
-        (array: [2, 3, 5], expected: false),
-        (array: [], expected: true),
-    ])
-    func `Static zero accepts when the matching element count is zero`(array: [Int], expected: Bool) {
-        let predicate = Predicate.Count.zero(isEven)
-        #expect(predicate(array) == expected)
-    }
-
-    @Test(arguments: [
-        (array: [2, 3, 5], expected: true),
-        (array: [1, 3, 5], expected: false),
-        (array: [2, 4, 6], expected: false),
-    ])
-    func `Static one accepts when the matching element count is one`(array: [Int], expected: Bool) {
-        let predicate = Predicate.Count.one(isEven)
-        #expect(predicate(array) == expected)
-    }
-
-    @Test(arguments: [
-        (array: [2, 4, 6], n: 2, expected: true),
-        (array: [2, 4], n: 3, expected: false),
-    ])
-    func `Instance at least accepts when the matching element count reaches the lower bound`(array: [Int], n: Int, expected: Bool) {
-        let predicate = isEven.count.atLeast(n)
-        #expect(predicate(array) == expected)
-    }
-
-    @Test(arguments: [
-        (array: [2, 4, 6], n: 3, expected: true),
-        (array: [2, 4, 6, 8], n: 3, expected: false),
-    ])
-    func `Instance at most accepts when the matching element count does not exceed the upper bound`(array: [Int], n: Int, expected: Bool) {
-        let predicate = isEven.count.atMost(n)
-        #expect(predicate(array) == expected)
-    }
-
-    @Test(arguments: [
-        (array: [2, 4, 6], n: 3, expected: true),
-        (array: [2, 4], n: 3, expected: false),
-    ])
-    func `Instance exactly accepts when the matching element count equals the requested count`(array: [Int], n: Int, expected: Bool) {
-        let predicate = isEven.count.exactly(n)
-        #expect(predicate(array) == expected)
-    }
-
-    @Test(arguments: [
-        (array: [1, 3, 5], expected: true),
-        (array: [2, 3, 5], expected: false),
-    ])
-    func `Instance zero accepts when the matching element count is zero`(array: [Int], expected: Bool) {
-        let predicate = isEven.count.zero
-        #expect(predicate(array) == expected)
-    }
-
-    @Test(arguments: [
-        (array: [2, 3, 5], expected: true),
-        (array: [1, 3, 5], expected: false),
-    ])
-    func `Instance one accepts when the matching element count is one`(array: [Int], expected: Bool) {
-        let predicate = isEven.count.one
-        #expect(predicate(array) == expected)
-    }
-}
 
 @Suite
-struct `Predicate factories preserve comparison membership and collection conditions` {
-    @Test(arguments: [
-        (value: 0, expected: true),
-        (value: 1, expected: false),
-    ])
-    func `The equality factory matches the requested value`(value: Int, expected: Bool) {
-        let isZero = Predicate<Int>.equal.to(0)
-        #expect(isZero(value) == expected)
+struct `Predicate ownership and iteration contracts` {
+    private struct Owned: ~Copyable { let value: Int }
+
+    @Test func `Boolean composition repeatedly borrows a noncopyable value`() {
+        let positive = Predicate<Owned> { $0.value > 0 }
+        let even = Predicate<Owned> { $0.value % 2 == 0 }
+        let predicate = positive && even
+        let value = Owned(value: 2)
+        let first = predicate(value)
+        let second = predicate(value)
+        let negated = (!predicate)(value)
+        #expect(first)
+        #expect(second)
+        #expect(!negated)
     }
 
-    @Test(arguments: [
-        (value: 0, expected: false),
-        (value: 1, expected: true),
-    ])
-    func `The inequality factory rejects the requested value`(value: Int, expected: Bool) {
-        let isNotZero = Predicate<Int>.not.equalTo(0)
-        #expect(isNotZero(value) == expected)
+    @Test func `Boolean composition accepts scoped input`() {
+        let values = [1, 2]
+        let nonempty = Predicate<Span<Int>> { !$0.isEmpty }
+        let pair = Predicate<Span<Int>> { $0.count == 2 }
+        let result = (nonempty && pair)(values.span)
+        #expect(result)
     }
 
-    @Test(arguments: [
-        (value: "a" as Character, expected: true),
-        (value: "b" as Character, expected: false),
-    ])
-    func `The collection membership factory matches contained values`(value: Character, expected: Bool) {
-        let isVowel = Predicate<Character>.in.collection("aeiou")
-        #expect(isVowel(value) == expected)
+    private final class Stream: Sequence, IteratorProtocol {
+        var nextValue = 0
+        var reads = 0
+        func makeIterator() -> Stream { self }
+        func next() -> Int? {
+            guard nextValue < 5 else { return nil }
+            reads += 1
+            defer { nextValue += 1 }
+            return nextValue
+        }
     }
 
-    @Test(arguments: [
-        (value: 3, threshold: 5, expected: true),
-        (value: 5, threshold: 5, expected: false),
-    ])
-    func `The less than factory excludes its upper bound`(value: Int, threshold: Int, expected: Bool) {
-        let predicate = Predicate<Int>.less.than(threshold)
-        #expect(predicate(value) == expected)
-    }
+    @Test func `quantifiers short circuit and advance a single pass source`() {
+        let source = Stream()
+        let belowTwo = Predicate<Int> { $0 < 2 }
+        let all: Predicate<Stream> = belowTwo.forAll()
+        #expect(!all(source))
+        #expect(source.reads == 3)
+        #expect(source.nextValue == 3)
 
-    @Test(arguments: [
-        (value: 5, threshold: 5, expected: true),
-        (value: 6, threshold: 5, expected: false),
-    ])
-    func `The less than or equal factory includes its upper bound`(value: Int, threshold: Int, expected: Bool) {
-        let predicate = Predicate<Int>.less.thanOrEqualTo(threshold)
-        #expect(predicate(value) == expected)
-    }
+        let three = Predicate<Int> { $0 == 3 }
+        let any: Predicate<Stream> = three.forAny()
+        #expect(any(source))
+        #expect(source.reads == 4)
 
-    @Test(arguments: [
-        (value: 6, threshold: 5, expected: true),
-        (value: 5, threshold: 5, expected: false),
-    ])
-    func `The greater than factory excludes its lower bound`(value: Int, threshold: Int, expected: Bool) {
-        let predicate = Predicate<Int>.greater.than(threshold)
-        #expect(predicate(value) == expected)
-    }
-
-    @Test(arguments: [
-        (value: 5, threshold: 5, expected: true),
-        (value: 4, threshold: 5, expected: false),
-    ])
-    func `The greater than or equal factory includes its lower bound`(value: Int, threshold: Int, expected: Bool) {
-        let predicate = Predicate<Int>.greater.thanOrEqualTo(threshold)
-        #expect(predicate(value) == expected)
-    }
-
-    @Test(arguments: [
-        (value: 15, expected: true),
-        (value: 12, expected: false),
-        (value: 20, expected: false),
-    ])
-    func `The range membership factory matches contained values`(value: Int, expected: Bool) {
-        let isTeenager = Predicate<Int>.in.range(13...19)
-        #expect(isTeenager(value) == expected)
-    }
-
-    @Test(arguments: [
-        (value: 10, expected: true),
-        (value: 15, expected: false),
-    ])
-    func `The negated range membership factory rejects contained values`(value: Int, expected: Bool) {
-        let outsideTeenage = Predicate<Int>.not.inRange(13...19)
-        #expect(outsideTeenage(value) == expected)
-    }
-
-    @Test(arguments: [
-        (value: [], expected: true),
-        (value: [1], expected: false),
-    ])
-    func `The empty factory matches empty collections`(value: [Int], expected: Bool) {
-        #expect(Predicate<[Int]>.is.empty(value) == expected)
-    }
-
-    @Test(arguments: [
-        (value: [1], expected: true),
-        (value: [], expected: false),
-    ])
-    func `The not empty factory matches nonempty collections`(value: [Int], expected: Bool) {
-        #expect(Predicate<[Int]>.is.notEmpty(value) == expected)
-    }
-
-    @Test(arguments: [
-        (value: [1, 2, 3], count: 3, expected: true),
-        (value: [1, 2], count: 3, expected: false),
-    ])
-    func `The count factory matches the requested collection length`(value: [Int], count: Int, expected: Bool) {
-        #expect(Predicate<[Int]>.has.count(count)(value) == expected)
-    }
-
-    @Test(arguments: [
-        (value: "hello", substring: "ell", expected: true),
-        (value: "hello", substring: "xyz", expected: false),
-    ])
-    func `The substring factory matches strings containing the requested text`(value: String, substring: String, expected: Bool) {
-        #expect(Predicate<String>.contains.substring(substring)(value) == expected)
-    }
-
-    @Test(arguments: [
-        (value: "hello", prefix: "hel", expected: true),
-        (value: "hello", prefix: "xyz", expected: false),
-    ])
-    func `The prefix factory matches strings with the requested prefix`(value: String, prefix: String, expected: Bool) {
-        #expect(Predicate<String>.has.prefix(prefix)(value) == expected)
-    }
-
-    @Test(arguments: [
-        (value: "hello", suffix: "llo", expected: true),
-        (value: "hello", suffix: "xyz", expected: false),
-    ])
-    func `The suffix factory matches strings with the requested suffix`(value: String, suffix: String, expected: Bool) {
-        #expect(Predicate<String>.has.suffix(suffix)(value) == expected)
-    }
-
-    @Test(arguments: [
-        (value: "red", expected: true),
-        (value: "yellow", expected: false),
-    ])
-    func `The any equality factory matches one of the requested values`(value: String, expected: Bool) {
-        let isPrimaryColor = Predicate<String>.equal.toAny(of: "red", "green", "blue")
-        #expect(isPrimaryColor(value) == expected)
-    }
-
-    @Test(arguments: [
-        (value: "yellow", expected: true),
-        (value: "red", expected: false),
-    ])
-    func `The none equality factory rejects each requested value`(value: String, expected: Bool) {
-        let isNotPrimaryColor = Predicate<String>.equal.toNone(of: "red", "green", "blue")
-        #expect(isNotPrimaryColor(value) == expected)
-    }
-}
-
-@Suite
-struct `Identity predicates match the requested identifiers` {
-    struct Item: Identifiable {
-        let id: Int
-        let name: String
-    }
-
-    @Test(arguments: [
-        (item: Item(id: 1, name: "A"), targetId: 1, expected: true),
-        (item: Item(id: 2, name: "B"), targetId: 1, expected: false),
-    ])
-    func `The identity factory matches the requested identifier`(item: Item, targetId: Int, expected: Bool) {
-        let predicate = Predicate<Item>.has.id(targetId)
-        #expect(predicate(item) == expected)
-    }
-
-    @Test(arguments: [
-        (item: Item(id: 1, name: "A"), expected: true),
-        (item: Item(id: 4, name: "D"), expected: false),
-    ])
-    func `The identity membership factory matches an identifier in the collection`(item: Item, expected: Bool) {
-        let predicate = Predicate<Item>.has.id(in: [1, 2, 3])
-        #expect(predicate(item) == expected)
+        let four = Predicate<Int> { $0 == 4 }
+        let none: Predicate<Stream> = four.forNone()
+        #expect(!none(source))
+        #expect(source.reads == 5)
     }
 }

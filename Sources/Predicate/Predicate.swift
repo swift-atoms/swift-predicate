@@ -11,13 +11,8 @@ public struct Predicate<T: ~Copyable & ~Escapable> {
 extension Predicate where T: ~Copyable & ~Escapable {
 
     @inlinable
-    public static func callAsFunction(_ predicate: Predicate, _ value: borrowing T) -> Bool {
-        predicate.evaluate(value)
-    }
-
-    @inlinable
     public func callAsFunction(_ value: borrowing T) -> Bool {
-        Self.callAsFunction(self, value)
+        evaluate(value)
     }
 }
 
@@ -142,11 +137,6 @@ extension Predicate where T: ~Copyable & ~Escapable {
     }
 
     @inlinable
-    public static func unless(_ lhs: Predicate, condition: Predicate) -> Predicate {
-        Self.implies(condition, lhs)
-    }
-
-    @inlinable
     public func implies(_ other: Predicate) -> Predicate {
         Self.implies(self, other)
     }
@@ -156,10 +146,6 @@ extension Predicate where T: ~Copyable & ~Escapable {
         Self.iff(self, other)
     }
 
-    @inlinable
-    public func unless(_ condition: Predicate) -> Predicate {
-        Self.unless(self, condition: condition)
-    }
 }
 
 extension Predicate {
@@ -192,23 +178,6 @@ extension Predicate {
 extension Predicate {
 
     @inlinable
-    public static func `where`<V>(_ keyPath: KeyPath<T, V>, _ predicate: Predicate<V>) -> Predicate
-    {
-        predicate.pullback(keyPath)
-    }
-
-    @inlinable
-    public static func `where`<V>(
-        _ keyPath: KeyPath<T, V>,
-        _ test: @escaping (V) -> Bool
-    ) -> Predicate {
-        Predicate<V>(test).pullback(keyPath)
-    }
-}
-
-extension Predicate {
-
-    @inlinable
     public static func optional(_ predicate: Predicate, default defaultValue: Bool) -> Predicate<T?>
     {
         Predicate<T?> { value in
@@ -226,21 +195,6 @@ extension Predicate {
 extension Predicate {
 
     @inlinable
-    public static func all(_ predicate: Predicate) -> Predicate<[T]> {
-        Predicate<[T]> { $0.allSatisfy(predicate.evaluate) }
-    }
-
-    @inlinable
-    public static func any(_ predicate: Predicate) -> Predicate<[T]> {
-        Predicate<[T]> { $0.contains(where: predicate.evaluate) }
-    }
-
-    @inlinable
-    public static func none(_ predicate: Predicate) -> Predicate<[T]> {
-        Predicate<[T]> { !$0.contains(where: predicate.evaluate) }
-    }
-
-    @inlinable
     public static func forAll<S: Sequence>(_ predicate: Predicate) -> Predicate<S>
     where S.Element == T {
         Predicate<S> { $0.allSatisfy(predicate.evaluate) }
@@ -256,21 +210,6 @@ extension Predicate {
     public static func forNone<S: Sequence>(_ predicate: Predicate) -> Predicate<S>
     where S.Element == T {
         Predicate<S> { !$0.contains(where: predicate.evaluate) }
-    }
-
-    @inlinable
-    public var all: Predicate<[T]> {
-        Self.all(self)
-    }
-
-    @inlinable
-    public var any: Predicate<[T]> {
-        Self.any(self)
-    }
-
-    @inlinable
-    public var none: Predicate<[T]> {
-        Self.none(self)
     }
 
     @inlinable
