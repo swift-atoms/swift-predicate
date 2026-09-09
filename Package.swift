@@ -32,16 +32,13 @@ let package = Package(
                 .product(name: "Contramap", package: "swift-contramap", condition: .when(traits: ["Contramap"])),
                 .product(name: "Always", package: "swift-always", condition: .when(traits: ["Always"])),
                 .product(name: "Optic", package: "swift-optic", condition: .when(traits: ["Optic"])),
-            ],
-            path: "Sources"
+            ]
         ),
-
         .testTarget(
             name: "Predicate Tests",
             dependencies: [
                 .target(name: "Predicate"),
-            ],
-            path: "Tests/Predicate Tests"
+            ]
         ),
         .testTarget(
             name: "Always Predicate Tests",
