@@ -2,7 +2,7 @@
 public import Contramap
 
 extension Predicate where T: ~Copyable & ~Escapable {
-    /// Projects once, then borrows the projected value for predicate evaluation.
+
     @inlinable
     public init<Focus: ~Copyable>(
         _ projection: Contramap<T, Focus, Never>,

@@ -2,8 +2,7 @@
 public import Optic
 
 extension Predicate where T: ~Copyable & ~Escapable {
-    /// Universal evaluation. No visits satisfy the predicate vacuously.
-    /// The visitor cannot stop traversal, but the predicate stops after rejection.
+
     public init<
         Target: ~Copyable & ~Escapable,
         Focus: ~Copyable & ~Escapable,
@@ -21,8 +20,6 @@ extension Predicate where T: ~Copyable & ~Escapable {
         }
     }
 
-    /// Existential evaluation. No visits return false.
-    /// The visitor cannot stop traversal, but the predicate stops after a match.
     public init<
         Target: ~Copyable & ~Escapable,
         Focus: ~Copyable & ~Escapable,
