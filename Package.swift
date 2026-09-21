@@ -15,12 +15,14 @@ let package = Package(
         .library(name: "Predicate", targets: ["Predicate"]),
     ],
     traits: [
+        .trait(name: "Logic", description: "Ternary evaluation of optional inputs"),
         .trait(name: "Contramap", description: "Borrowed input adaptation"),
         .trait(name: "Always", description: "Constant predicates"),
         .trait(name: "Optic", description: "Borrowed focus evaluation"),
-        .default(enabledTraits: ["Contramap", "Always", "Optic"]),
+        .default(enabledTraits: ["Contramap", "Always", "Optic", "Logic"]),
     ],
     dependencies: [
+        .package(url: "https://github.com/swift-atoms/swift-logic.git", branch: "main"),
         .package(url: "https://github.com/swift-atoms/swift-contramap.git", branch: "main"),
         .package(url: "https://github.com/swift-atoms/swift-always.git", branch: "main"),
         .package(url: "https://github.com/swift-atoms/swift-optic.git", branch: "main"),
@@ -29,6 +31,7 @@ let package = Package(
         .target(
             name: "Predicate",
             dependencies: [
+                .product(name: "Logic", package: "swift-logic", condition: .when(traits: ["Logic"])),
                 .product(name: "Contramap", package: "swift-contramap", condition: .when(traits: ["Contramap"])),
                 .product(name: "Always", package: "swift-always", condition: .when(traits: ["Always"])),
                 .product(name: "Optic", package: "swift-optic", condition: .when(traits: ["Optic"])),
