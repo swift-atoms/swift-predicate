@@ -59,20 +59,22 @@ private enum Verdict: Logic.Ternary.`Protocol` {
     case `false`
     case unknown
 
-    static func from(_ value: Self) -> Bool? {
-        switch value {
-        case .true: true
-        case .false: false
-        case .unknown: nil
-        }
-    }
-
     init(_ bool: Bool) {
         self = bool ? .true : .false
     }
 
     init(_ bool: Bool?) {
         self = bool.map { $0 ? .true : .false } ?? .unknown
+    }
+}
+
+extension Verdict {
+    static func from(_ value: Self) -> Bool? {
+        switch value {
+        case .true: true
+        case .false: false
+        case .unknown: nil
+        }
     }
 }
 

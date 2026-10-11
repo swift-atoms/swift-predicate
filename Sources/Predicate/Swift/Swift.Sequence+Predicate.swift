@@ -1,4 +1,4 @@
-extension Swift.Sequence {
+extension Swift::Sequence {
 
     @inlinable
     public func allSatisfy(_ predicate: Predicate<Element>) -> Bool {
