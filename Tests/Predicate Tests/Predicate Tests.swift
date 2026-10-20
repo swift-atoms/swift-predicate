@@ -1,6 +1,5 @@
-import Testing
-
 import Predicate
+import Testing
 
 @Suite
 struct `Predicates evaluate supplied closures and constant truth values` {
@@ -12,7 +11,6 @@ struct `Predicates evaluate supplied closures and constant truth values` {
         #expect(isEven(3) == false)
         #expect(isEven.evaluate(4) == true)
     }
-
 
 }
 
@@ -40,6 +38,5 @@ struct `Predicate ownership and iteration contracts` {
         let result = (nonempty && pair)(values.span)
         #expect(result)
     }
-
 
 }

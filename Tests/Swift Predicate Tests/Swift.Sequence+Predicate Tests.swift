@@ -46,7 +46,10 @@ struct `Sequence accepts Predicate values` {
     @Test func `direct operations short circuit a single pass source`() {
         let source = Stream()
         var calls = 0
-        let two = Predicate<Int> { calls += 1; return $0 == 2 }
+        let two = Predicate<Int> {
+            calls += 1
+            return $0 == 2
+        }
         #expect(source.contains(where: two))
         #expect(calls == 3)
         #expect(source.nextValue == 3)
